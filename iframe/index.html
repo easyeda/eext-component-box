@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+	<meta charset="utf-8" />
+	<title>个人器件库</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" href="/iframe/style.css" />
+</head>
+<body>
+	<div class="toolbar">
+		<button type="button" id="btn-import" class="btn btn-primary">导入订单表格</button>
+		<button type="button" id="btn-delete-mode" class="btn btn-danger">删除器件</button>
+		<button type="button" id="btn-select-all" class="btn btn-sm" style="display:none;">全选</button>
+		<button type="button" id="btn-confirm-delete" class="btn btn-sm btn-danger" style="display:none;">确认删除</button>
+		<button type="button" id="btn-cancel-delete" class="btn btn-sm" style="display:none;">取消</button>
+		<button type="button" id="btn-box" class="btn btn-box">映射器件盒</button>
+		<input type="text" id="search-input" placeholder="搜索器件（编号/名称/描述）..." />
+		<span id="status" class="status"></span>
+	</div>
+	<div id="table-container">
+		<table id="device-table">
+			<thead>
+				<tr>
+					<th>数量</th>
+					<th>商品编号</th>
+					<th>器件名称</th>
+					<th>封装</th>
+					<th>描述</th>
+					<th>制造商</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody id="device-tbody"></tbody>
+		</table>
+		<div id="empty-tip" class="empty-tip">暂无器件，请点击"导入订单表格"添加</div>
+	</div>
+
+	<div id="modal-overlay" class="modal-overlay" style="display:none;">
+		<div class="modal">
+			<div class="modal-header">
+				<span class="modal-title">编辑器件</span>
+				<button type="button" class="modal-close" id="modal-close">&times;</button>
+			</div>
+			<div class="modal-body" id="modal-body"></div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger" id="modal-delete">删除</button>
+				<button type="button" class="btn btn-primary" id="modal-save">保存</button>
+			</div>
+		</div>
+	</div>
+
+	<script src="/iframe/xlsx.full.min.js"></script>
+	<script src="/iframe/app.js"></script>
+</body>
+</html>
