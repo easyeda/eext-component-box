@@ -61,7 +61,7 @@ jobs:
           echo "🔎 Extracting changelog for version $VERSION from CHANGELOG.md"
           ESCAPED_VERSION=$(echo "$VERSION" | sed 's/\./\\./g')
 
-          if [ -f "CHANGELOG.md" ]; then
+          if [ -f ]; then
             # 支持多种 CHANGELOG 格式（兼容大小写 V）：
             # - # v1.5.3 或 # V1.5.3 或 # 1.5.3
             # - ## v1.5.3 或 ## V1.5.3 或 ## 1.5.3
@@ -124,48 +124,37 @@ jobs:
           VERSION=${{ env.VERSION }}
           EEXTNAME=${{ env.EEXTNAME }}
           DIST_DIR="build/dist"
+          BASE_FILE="${DIST_DIR}/${EEXTNAME}_v${VERSION}.eext"
           ZH_FILE="${DIST_DIR}/${EEXTNAME}_v${VERSION}_zh-cn.eext"
 
-          echo "📦 构建中文版包..."
+          echo "Building zh-cn package..."
 
-          # 查找中文 README 文件
-          # 优先级：README_zh.md > README_zh-*.md > README.zh.md > README.zh-*.md > README.md
+          # Find zh README
           ZH_README=""
           if [ -f "README_zh.md" ]; then
             ZH_README="README_zh.md"
           elif [ -f "README.zh.md" ]; then
             ZH_README="README.zh.md"
           else
-            # 查找 README_zh-xx.md 或 README.zh-xx.md 格式
             ZH_README=$(ls README_zh-*.md README.zh-*.md 2>/dev/null | head -1)
           fi
 
-          # 如果没有中文 README，使用默认 README.md
           if [ -z "$ZH_README" ]; then
-            echo "⚠️ 未找到中文 README，使用默认 README.md"
-            ZH_README="README.md"
+            echo "No zh README found, copying base eext as zh-cn"
+            cp "$BASE_FILE" "$ZH_FILE"
           else
-            echo "✅ 使用中文 README: $ZH_README"
+            echo "Using zh README: $ZH_README"
+            # Backup and swap README.md
+            mv README.md README.md.bak
+            cp "$ZH_README" README.md
+            # Re-package using npm run build
+            npm run build
+            mv "$BASE_FILE" "$ZH_FILE"
+            # Restore original README.md
+            mv README.md.bak README.md
           fi
 
-          # 创建临时目录
-          TEMP_DIR=$(mktemp -d)
-          cp -r . "$TEMP_DIR/source"
-
-          # 替换 README.md
-          if [ "$ZH_README" != "README.md" ] && [ -f "$ZH_README" ]; then
-            cp "$ZH_README" "$TEMP_DIR/source/README.md"
-          fi
-
-          # 打包
-          cd "$TEMP_DIR/source"
-          zip -r "$OLDPWD/$ZH_FILE" . -x ".git/*" ".husky/*" ".vscode/*" ".claude/*" "build/*" "config/*" "coverage/*" "node_modules/*" "src/*" ".editorconfig" ".gitattributes" ".gitignore" ".npmrc" "eslint.config.mjs" "package-lock.json" "package.json" "tsconfig.json" ".eslintcache" "debug.log" "*.md" "!README.md" "CHANGELOG.md"
-
-          echo "✅ 中文版包构建完成: $ZH_FILE"
-          ls -lh "$OLDPWD/$ZH_FILE"
-
-          # 清理
-          rm -rf "$TEMP_DIR"
+          echo "Done: $ZH_FILE"
 
       - name: Build global package
         if: env.SKIP_RELEASE == 'false'
@@ -173,48 +162,45 @@ jobs:
           VERSION=${{ env.VERSION }}
           EEXTNAME=${{ env.EEXTNAME }}
           DIST_DIR="build/dist"
+          BASE_FILE="${DIST_DIR}/${EEXTNAME}_v${VERSION}.eext"
           GLOBAL_FILE="${DIST_DIR}/${EEXTNAME}_v${VERSION}_global.eext"
 
-          echo "📦 构建国际版包..."
+          echo "Building global package..."
 
-          # 查找英文 README 文件
-          # 优先级：README_en.md > README_en-*.md > README.en.md > README.en-*.md > README.md
+          # Find en README
           EN_README=""
           if [ -f "README_en.md" ]; then
             EN_README="README_en.md"
           elif [ -f "README.en.md" ]; then
             EN_README="README.en.md"
           else
-            # 查找 README_en-xx.md 或 README.en-xx.md 格式
             EN_README=$(ls README_en-*.md README.en-*.md 2>/dev/null | head -1)
           fi
 
-          # 如果没有英文 README，使用默认 README.md
           if [ -z "$EN_README" ]; then
-            echo "⚠️ 未找到英文 README，使用默认 README.md"
-            EN_README="README.md"
+            echo "No en README found, copying base eext as global"
+            cp "$BASE_FILE" "$GLOBAL_FILE"
           else
-            echo "✅ 使用英文 README: $EN_README"
+            echo "Using en README: $EN_README"
+            # Backup and swap README.md
+            mv README.md README.md.bak
+            cp "$EN_README" README.md
+            # Re-package using npm run build
+            npm run build
+            mv "$BASE_FILE" "$GLOBAL_FILE"
+            # Restore original README.md
+            mv README.md.bak README.md
           fi
 
-          # 创建临时目录
-          TEMP_DIR=$(mktemp -d)
-          cp -r . "$TEMP_DIR/source"
+          echo "Done: $GLOBAL_FILE"
 
-          # 替换 README.md
-          if [ "$EN_README" != "README.md" ] && [ -f "$EN_README" ]; then
-            cp "$EN_README" "$TEMP_DIR/source/README.md"
-          fi
-
-          # 打包
-          cd "$TEMP_DIR/source"
-          zip -r "$OLDPWD/$GLOBAL_FILE" . -x ".git/*" ".husky/*" ".vscode/*" ".claude/*" "build/*" "config/*" "coverage/*" "node_modules/*" "src/*" ".editorconfig" ".gitattributes" ".gitignore" ".npmrc" "eslint.config.mjs" "package-lock.json" "package.json" "tsconfig.json" ".eslintcache" "debug.log" "*.md" "!README.md" "CHANGELOG.md"
-
-          echo "✅ 国际版包构建完成: $GLOBAL_FILE"
-          ls -lh "$OLDPWD/$GLOBAL_FILE"
-
-          # 清理
-          rm -rf "$TEMP_DIR"
+      - name: Cleanup base eext
+        if: env.SKIP_RELEASE == 'false'
+        run: |
+          VERSION=${{ env.VERSION }}
+          EEXTNAME=${{ env.EEXTNAME }}
+          rm -f "build/dist/${EEXTNAME}_v${VERSION}.eext"
+          echo "Removed base eext"
 
       - name: Debug check artifacts
         if: env.SKIP_RELEASE == 'false'
