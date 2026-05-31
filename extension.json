@@ -10,8 +10,8 @@
 	},
 	"license": "Apache-2.0",
 	"repository": {
-		"type": "extension-store",
-		"url": ""
+		"type": "github",
+		"url": "https://github.com/easyeda/eext-component-box"
 	},
 	"categories": "Other",
 	"keywords": [
@@ -21,8 +21,8 @@
 	"images": {
 		"logo": "./images/logo.png"
 	},
-	"homepage": "",
-	"bugs": "",
+	"homepage": "https://github.com/easyeda",
+	"bugs": "https://github.com/easyeda/eext-component-box/issues",
 	"activationEvents": {},
 	"entry": "./dist/index",
 	"dependentExtensions": {},
