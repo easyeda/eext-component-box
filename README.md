@@ -8,6 +8,11 @@
 
 ## 功能介绍
 
+| 器件库管理页 | 器件盒配置页 |
+| --- | --- |
+| ![器件库管理](images/image1.png) | ![器件盒配置](images/image2.png) |
+
+
 #### LCSC订单导入
 - 支持导入 `.xls` / `.xlsx` 格式的立创商城订单文件
 - 自动解析商品编号（C编号）和购买数量
@@ -26,16 +31,13 @@
 - 双击格位弹出器件选择器，从器件库中选择器件
 - 支持清除映射，释放格位供其他器件使用
 - 
-| 器件库管理页 | 器件盒配置页 |
-| --- | --- |
-| ![器件库管理](images/image1.png) | ![器件盒配置](images/image2.png) |
 
-### 器件盒
+### 硬件
 
-![alt text](images/123.jpg)
+![alt text](images/123.png) 
 
-[硬件说明](Hardware/README.md)  
-[立创硬件开源广场](https://oshwhub.com/course-examples/project_kjqfbdaj)
+ [硬件说明](Hardware/README.md)  
+### [访问立创硬件开源广场](https://oshwhub.com/course-examples/project_kjqfbdaj)
 
 #### 硬件实时同步
 - 支持通过 USB 串口或蓝牙 BLE 连接硬件
