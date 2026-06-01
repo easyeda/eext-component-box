@@ -4,6 +4,8 @@
 
 Based on LCSC Dev Board ESP32S3R8N8, working in conjunction with LCSC EDA Extension
 
+**This extension is only supported in the browser environment and is not currently available for client-side use**
+
 ## Features
 
 #### LCSC Order Import
