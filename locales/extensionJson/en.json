@@ -1,4 +1,11 @@
 {
 	"个人器件库": "My Component Library",
-	"打开器件库": "Open Library"
+	"打开器件库": "Open Library",
+	"智能器件盒管理器": "Smart Component Box Manager",
+	"连接器件盒": "Connect Component Box",
+	"查找选中的器件": "Find Selected Component",
+	"displayName": "Smart Component Box Manager",
+	"description": "A simple component box based on LCSC development board. Supports importing LCSC orders for digital component management, simplifying finding and inventory processes.",
+	"Tool": "Tool",
+	"Library": "Library"
 }

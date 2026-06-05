@@ -291,7 +291,7 @@
 			});
 		}
 		if (filtered.length === 0) {
-			pickerList.innerHTML = '<div style="padding:16px;text-align:center;color:#999;">' + L('无匹配器件', 'No matching components') + '</div>';
+			pickerList.innerHTML = '<div style="padding:16px;text-align:center;color:#999;">' + t('no_matching_components') + '</div>';
 			return;
 		}
 		pickerList.innerHTML = filtered.map(function (d) {
@@ -525,13 +525,13 @@
 
 	async function doConnectSerial() {
 		if (connected) return;
-		if (!navigator.serial) { alert('当前环境不支持 Web Serial API'); return; }
+		if (!navigator.serial) { alert(t('web_serial_not_supported')); return; }
 		try {
 			serialPort = await navigator.serial.requestPort();
 			await serialPort.open({ baudRate: 115200 });
 			connected = true;
 			connectionType = 'serial';
-			btnBoxConnect.textContent = '已连接(串口)';
+			btnBoxConnect.textContent = t('connected_serial');
 			btnBoxConnect.classList.add('btn-serial-disconnect');
 			serialWriter = serialPort.writable.getWriter();
 			saveConnType('serial');
@@ -555,7 +555,7 @@
 		} catch (err) {}
 		connected = false;
 		connectionType = '';
-		btnBoxConnect.textContent = '连接设备';
+		btnBoxConnect.textContent = t('connect_device');
 		btnBoxConnect.classList.remove('btn-serial-disconnect');
 		btnSync.style.display = 'none';
 		onDisconnected();
@@ -564,7 +564,7 @@
 
 	async function doConnectBle() {
 		if (connected) return;
-		if (!navigator.bluetooth) { alert('当前环境不支持 Web Bluetooth API'); return; }
+		if (!navigator.bluetooth) { alert(t('web_bluetooth_not_supported')); return; }
 		try {
 			bleDevice = await navigator.bluetooth.requestDevice({
 				filters: [{ services: [0xFFE0] }],
@@ -584,7 +584,7 @@
 			bleDevice.addEventListener('gattserverdisconnected', function () {
 				connected = false;
 				connectionType = '';
-				btnBoxConnect.textContent = '连接设备';
+				btnBoxConnect.textContent = t('connect_device');
 				btnBoxConnect.classList.remove('btn-serial-disconnect');
 				btnSync.style.display = 'none';
 				onDisconnected();
@@ -593,7 +593,7 @@
 
 			connected = true;
 			connectionType = 'ble';
-			btnBoxConnect.textContent = '已连接(蓝牙)';
+			btnBoxConnect.textContent = t('connected_bluetooth');
 			btnBoxConnect.classList.add('btn-serial-disconnect');
 			saveConnType('ble');
 			onConnected();
@@ -681,8 +681,8 @@
 			handleQtyReport(msg.row, msg.col, msg.qty || 0);
 		} else if (msg.type === 'synccomplete') {
 			if (btnSync.disabled) {
-				btnSync.textContent = '同步完成';
-				setTimeout(function () { btnSync.textContent = '同步'; btnSync.disabled = false; }, 1500);
+				btnSync.textContent = t('sync_complete');
+				setTimeout(function () { btnSync.textContent = t('sync'); btnSync.disabled = false; }, 1500);
 			}
 		}
 	}
@@ -739,8 +739,8 @@
 			updateCursorHighlight();
 			sendJSON({ type: 'getcursor' });
 			sendJSON({ type: 'synccomplete' });
-			btnSync.textContent = '同步完成';
-			setTimeout(function () { btnSync.textContent = '同步'; }, 1500);
+			btnSync.textContent = t('sync_complete');
+			setTimeout(function () { btnSync.textContent = t('sync'); }, 1500);
 			return;
 		}
 		var cell = syncCells[syncIdx];
@@ -757,7 +757,7 @@
 			showSyncProgress(syncIdx + 1, L('(空)', '(Empty)'), posStr);
 			sendJSON({ type: 'clear', row: cell.row, col: cell.col });
 			syncIdx++;
-			btnSync.textContent = '同步 ' + syncIdx + '/' + syncTotal;
+			btnSync.textContent = t('sync_progress', syncIdx, syncTotal);
 			syncNext();
 		}
 	}
@@ -790,7 +790,7 @@
 			}
 		}
 		syncIdx++;
-		btnSync.textContent = '同步 ' + syncIdx + '/' + syncTotal;
+		btnSync.textContent = t('sync_progress', syncIdx, syncTotal);
 		syncNext();
 	}
 
@@ -809,7 +809,7 @@
 		}
 		syncTotal = syncCells.length;
 		syncIdx = 0;
-		btnSync.textContent = '同步 0/' + syncTotal;
+		btnSync.textContent = t('sync_progress', 0, syncTotal);
 		syncNext();
 	});
 
@@ -860,17 +860,17 @@
 			cursorRow = foundInBox.row;
 			cursorCol = foundInBox.col;
 			updateCursorHighlight();
-			eda.sys_Message.showToastMessage('已在器件盒中找到: ' + (foundInLib ? foundInLib.name : lcscId) + '，位置 ' + (foundInBox.col + 1) + '-' + (foundInBox.row + 1), 'success');
+			eda.sys_Message.showToastMessage(t('found_in_box', (foundInLib ? foundInLib.name : lcscId), (foundInBox.col + 1) + '-' + (foundInBox.row + 1)), 'success');
 		} else if (foundInLib) {
 			if (connected) {
 				sendJSON({ type: 'showinfo', name: foundInLib.name || '', qty: foundInLib.quantity || 0, lcscId: foundInLib.lcscId });
 			}
-			eda.sys_Message.showToastMessage('器件库中有 ' + (foundInLib.name || lcscId) + '，但未映射到器件盒', 'info');
+			eda.sys_Message.showToastMessage(t('in_library_not_mapped', (foundInLib.name || lcscId)), 'info');
 		} else {
 			if (connected) {
 				sendJSON({ type: 'shownotfound' });
 			}
-			eda.sys_Message.showToastMessage('您的器件库没有该器件: ' + (lcscId || '未选中'), 'error');
+			eda.sys_Message.showToastMessage(t('not_in_library', lcscId || t('not_selected')), 'error');
 		}
 		renderBoxGrid();
 		updateCursorHighlight();
@@ -892,7 +892,7 @@
 					await serialPort.open({ baudRate: 115200 });
 					connected = true;
 					connectionType = 'serial';
-					btnBoxConnect.textContent = '已连接(串口)';
+					btnBoxConnect.textContent = t('connected_serial');
 					btnBoxConnect.classList.add('btn-serial-disconnect');
 					serialWriter = serialPort.writable.getWriter();
 					onConnected();
@@ -916,14 +916,14 @@
 						});
 						bleDevice.addEventListener('gattserverdisconnected', function () {
 							connected = false; connectionType = '';
-							btnBoxConnect.textContent = '连接设备';
+							btnBoxConnect.textContent = t('connect_device');
 							btnBoxConnect.classList.remove('btn-serial-disconnect');
 							btnSync.style.display = 'none';
 							onDisconnected();
 							try { eda.sys_Storage.setExtensionUserConfig(CONN_TYPE_KEY, ''); } catch (e) {}
 						});
 						connected = true; connectionType = 'ble';
-						btnBoxConnect.textContent = '已连接(蓝牙)';
+						btnBoxConnect.textContent = t('connected_bluetooth');
 						btnBoxConnect.classList.add('btn-serial-disconnect');
 						onConnected();
 						console.log('[Box] Auto-reconnected BLE');

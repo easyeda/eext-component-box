@@ -55,12 +55,12 @@
 		if (filtered.length === 0) {
 			table.style.display = 'none';
 			emptyTip.style.display = 'block';
-			emptyTip.textContent = '无匹配器件';
+			emptyTip.textContent = t('no_matching_components');
 			return;
 		}
 		table.style.display = 'table';
 		emptyTip.style.display = 'none';
-		emptyTip.textContent = '暂无器件，请点击"导入订单表格"添加';
+		emptyTip.textContent = t('no_components_tip');
 
 		tbody.innerHTML = filtered.map(function (item) {
 			var d = item.d;
@@ -76,8 +76,8 @@
 				'<td title="' + escapeHtml(d.description || '') + '">' + escapeHtml(d.description || '-') + '</td>' +
 				'<td title="' + escapeHtml(d.manufacturer || '') + '">' + escapeHtml(d.manufacturer || '-') + '</td>' +
 				'<td><div class="action-btns">' +
-					'<button type="button" class="btn btn-sm btn-primary" onclick="window._editDevice(' + i + ')">编辑</button>' +
-					'<button type="button" class="btn btn-sm btn-success" onclick="window._useDevice(' + i + ')">使用</button>' +
+					'<button type="button" class="btn btn-sm btn-primary" onclick="window._editDevice(' + i + ')">' + t('edit') + '</button>' +
+					'<button type="button" class="btn btn-sm btn-success" onclick="window._useDevice(' + i + ')">' + t('use') + '</button>' +
 				'</div></td>' +
 				'</tr>';
 		}).join('');
@@ -143,7 +143,7 @@
 					var rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
 					if (rows.length < 2) {
-						reject(new Error('表格为空'));
+						reject(new Error(t('table_empty')));
 						return;
 					}
 
@@ -165,7 +165,7 @@
 					}
 
 					if (colIndex === -1) {
-						reject(new Error('未找到"商品编号"列，请确认表格格式'));
+						reject(new Error(t('column_not_found')));
 						return;
 					}
 
@@ -198,7 +198,7 @@
 					}
 
 					if (items.length === 0) {
-						reject(new Error('未找到有效的商品编号（C编号）'));
+						reject(new Error(t('no_valid_product_ids')));
 						return;
 					}
 
@@ -208,7 +208,7 @@
 				}
 			};
 			reader.onerror = function () {
-				reject(new Error('文件读取失败'));
+				reject(new Error(t('file_read_failed')));
 			};
 			reader.readAsArrayBuffer(file);
 		});
@@ -222,7 +222,7 @@
 		for (var i = 0; i < allIds.length; i += BATCH_SIZE) {
 			var batchIds = allIds.slice(i, i + BATCH_SIZE);
 			var batchItems = items.slice(i, i + BATCH_SIZE);
-			setStatus('正在查询器件信息... (' + Math.min(i + BATCH_SIZE, allIds.length) + '/' + allIds.length + ')', 'loading');
+			setStatus(t('querying_component_info', Math.min(i + BATCH_SIZE, allIds.length), allIds.length), 'loading');
 
 			try {
 				var apiResults = await eda.lib_Device.getByLcscIds(batchIds);
@@ -252,7 +252,7 @@
 					} else {
 						results.push({
 							lcscId: lcscId,
-							name: '(未找到)',
+							name: t('not_found'),
 							footprint: '-',
 							description: '-',
 							manufacturer: '-',
@@ -268,7 +268,7 @@
 				for (var k = 0; k < batchItems.length; k++) {
 					results.push({
 						lcscId: batchItems[k].id,
-						name: '(查询失败)',
+						name: t('query_failed'),
 						footprint: '-',
 						description: '-',
 						manufacturer: '-',
@@ -288,12 +288,12 @@
 		editingIndex = index;
 		var d = devices[index];
 		modalBody.innerHTML =
-			'<div class="form-group"><label>商品编号</label><input id="edit-lcscId" value="' + escapeHtml(d.lcscId || '') + '" /></div>' +
-			'<div class="form-group"><label>器件名称</label><input id="edit-name" value="' + escapeHtml(d.name || '') + '" /></div>' +
-			'<div class="form-group"><label>封装</label><input id="edit-footprint" value="' + escapeHtml(d.footprint || '') + '" /></div>' +
-			'<div class="form-group"><label>描述</label><input id="edit-description" value="' + escapeHtml(d.description || '') + '" /></div>' +
-			'<div class="form-group"><label>制造商</label><input id="edit-manufacturer" value="' + escapeHtml(d.manufacturer || '') + '" /></div>' +
-			'<div class="form-group"><label>数量</label><input id="edit-quantity" type="number" min="0" value="' + (d.quantity || 0) + '" /></div>';
+			'<div class="form-group"><label>' + t('product_id') + '</label><input id="edit-lcscId" value="' + escapeHtml(d.lcscId || '') + '" /></div>' +
+			'<div class="form-group"><label>' + t('component_name') + '</label><input id="edit-name" value="' + escapeHtml(d.name || '') + '" /></div>' +
+			'<div class="form-group"><label>' + t('package') + '</label><input id="edit-footprint" value="' + escapeHtml(d.footprint || '') + '" /></div>' +
+			'<div class="form-group"><label>' + t('description') + '</label><input id="edit-description" value="' + escapeHtml(d.description || '') + '" /></div>' +
+			'<div class="form-group"><label>' + t('manufacturer') + '</label><input id="edit-manufacturer" value="' + escapeHtml(d.manufacturer || '') + '" /></div>' +
+			'<div class="form-group"><label>' + t('quantity') + '</label><input id="edit-quantity" type="number" min="0" value="' + (d.quantity || 0) + '" /></div>';
 		modalOverlay.style.display = 'flex';
 	}
 
@@ -320,7 +320,7 @@
 		renderTable();
 		await saveDevices();
 		closeModal();
-		setStatus('已保存', '');
+		setStatus(t('saved'), '');
 		await notifyBoxRefresh();
 	});
 
@@ -330,7 +330,7 @@
 		renderTable();
 		await saveDevices();
 		closeModal();
-		setStatus('已删除', '');
+		setStatus(t('deleted'), '');
 		await notifyBoxRefresh();
 	});
 
@@ -338,14 +338,14 @@
 	async function useDevice(index) {
 		var d = devices[index];
 		if (!d.uuid || !d.libraryUuid) {
-			setStatus('该器件无有效库信息，无法放置', 'error');
+			setStatus(t('no_library_info'), 'error');
 			return;
 		}
 
 		try {
 			var docInfo = await eda.dmt_SelectControl.getCurrentDocumentInfo();
 			if (!docInfo) {
-				setStatus('请先打开一个文档', 'error');
+				setStatus(t('open_document_first'), 'error');
 				return;
 			}
 
@@ -358,10 +358,10 @@
 					d.quantity = Math.max(0, (d.quantity || 0) - 1);
 					renderTable();
 					await saveDevices();
-					setStatus('已放置到原理图，剩余 ' + d.quantity + ' 个', '');
+					setStatus(t('placed_to_schematic_remaining', d.quantity), '');
 					await notifyBoxRefresh();
 				} else {
-					setStatus('放置已取消', '');
+					setStatus(t('placement_cancelled'), '');
 				}
 			} else if (docType === 3) {
 				var result = await eda.pcb_PrimitiveComponent.create(component, 1, 0, 0);
@@ -369,17 +369,17 @@
 					d.quantity = Math.max(0, (d.quantity || 0) - 1);
 					renderTable();
 					await saveDevices();
-					setStatus('已放置到 PCB，剩余 ' + d.quantity + ' 个', '');
+					setStatus(t('placed_to_pcb_remaining', d.quantity), '');
 					await notifyBoxRefresh();
 				} else {
-					setStatus('放置失败', 'error');
+					setStatus(t('placement_failed'), 'error');
 				}
 			} else {
-				setStatus('当前文档不是原理图或 PCB，无法放置器件', 'error');
+				setStatus(t('not_schematic_or_pcb'), 'error');
 			}
 		} catch (err) {
 			console.error('[MyComponentLib]', 'Place device failed:', err);
-			setStatus('放置失败: ' + err.message, 'error');
+			setStatus(t('placement_failed_message', err.message), 'error');
 		}
 	}
 
@@ -393,9 +393,9 @@
 			var file = await eda.sys_FileSystem.openReadFileDialog(['.xls', '.xlsx'], false);
 			if (!file) return;
 
-			setStatus('正在解析表格...', 'loading');
+			setStatus(t('parsing_table'), 'loading');
 			var items = await extractLcscIds(file);
-			setStatus('找到 ' + items.length + ' 个商品编号，正在查询...', 'loading');
+			setStatus(t('found_ids_querying', items.length), 'loading');
 
 			var newDevices = await fetchDeviceInfo(items);
 
@@ -411,11 +411,11 @@
 
 			renderTable();
 			await saveDevices();
-			setStatus('导入完成，共 ' + devices.length + ' 个器件', '');
+			setStatus(t('import_complete', devices.length), '');
 			await notifyBoxRefresh();
 		} catch (err) {
 			console.error('[MyComponentLib]', 'Import failed:', err);
-			setStatus('导入失败: ' + err.message, 'error');
+			setStatus(t('import_failed', err.message), 'error');
 		}
 	});
 
@@ -475,17 +475,17 @@
 	btnConfirmDelete.addEventListener('click', async function () {
 		var indices = Object.keys(deleteChecked).map(Number).sort(function (a, b) { return b - a; });
 		if (indices.length === 0) {
-			setStatus('未选择任何器件', '');
+			setStatus(t('none_selected'), '');
 			return;
 		}
-		var confirmed = confirm('确定要删除选中的 ' + indices.length + ' 个器件吗？');
+		var confirmed = confirm(t('confirm_delete_selected', indices.length));
 		if (!confirmed) return;
 		for (var i = 0; i < indices.length; i++) {
 			devices.splice(indices[i], 1);
 		}
 		exitDeleteMode();
 		await saveDevices();
-		setStatus('已删除 ' + indices.length + ' 个器件', '');
+		setStatus(t('deleted_count', indices.length), '');
 		await notifyBoxRefresh();
 	});
 
@@ -493,7 +493,7 @@
 	btnBox.addEventListener('click', async function () {
 		try {
 			await eda.sys_IFrame.openIFrame('/iframe/box.html', 600, 580, 'component-box', {
-				title: '器件盒',
+				title: t('component_box'),
 				maximizeButton: true,
 				minimizeButton: true,
 			});
