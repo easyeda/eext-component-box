@@ -4,8 +4,7 @@
 	"智能器件盒管理器": "Smart Component Box Manager",
 	"连接器件盒": "Connect Component Box",
 	"查找选中的器件": "Find Selected Component",
-	"displayName": "Smart Component Box Manager",
-	"description": "A simple component box based on LCSC development board. Supports importing LCSC orders for digital component management, simplifying finding and inventory processes.",
+	"基于立创开发板的简易器件盒。支持导入 LCSC 订单实现器件数字化管理，简化找料与盘点流程。": "A simple component box based on LCSC development board. Supports importing LCSC orders for digital component management, simplifying finding and inventory processes.",
 	"Tool": "Tool",
 	"Library": "Library"
 }
