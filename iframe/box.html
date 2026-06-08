@@ -2,25 +2,25 @@
 <html lang="zh-Hans">
 <head>
 	<meta charset="utf-8" />
-	<title data-i18n="component_box"></title>
+	<title data-i18n="component_box">器件盒</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<link rel="stylesheet" href="/iframe/style.css" />
 </head>
 <body>
 	<div class="toolbar">
 		<div class="connect-dropdown" id="connect-dropdown">
-			<button type="button" id="btn-box-connect" class="btn btn-serial btn-sm" data-i18n="connect_device"></button>
+			<button type="button" id="btn-box-connect" class="btn btn-serial btn-sm" data-i18n="connect_device">连接设备</button>
 			<div class="connect-menu" id="connect-menu">
-				<div class="connect-menu-item" id="connect-serial" data-i18n="usb_serial"></div>
-				<div class="connect-menu-item" id="connect-ble" data-i18n="bluetooth"></div>
+				<div class="connect-menu-item" id="connect-serial" data-i18n="usb_serial">USB 串口</div>
+				<div class="connect-menu-item" id="connect-ble" data-i18n="bluetooth">蓝牙</div>
 			</div>
 		</div>
 		<label class="auto-connect-toggle">
 			<input type="checkbox" id="auto-connect" />
 			<span class="toggle-slider"></span>
-			<span class="toggle-label" data-i18n="auto_connect"></span>
+			<span class="toggle-label" data-i18n="auto_connect">自动连接</span>
 		</label>
-		<button type="button" id="btn-sync" class="btn btn-sm btn-success" style="display:none;" data-i18n="sync"></button>
+		<button type="button" id="btn-sync" class="btn btn-sm btn-success" style="display:none;" data-i18n="sync">同步</button>
 		<span id="status" class="status"></span>
 	</div>
 	<div class="box-hardware">
@@ -52,17 +52,17 @@
 	<div id="picker-overlay" class="modal-overlay" style="display:none;">
 		<div class="modal">
 			<div class="modal-header">
-				<span class="modal-title" data-i18n="select_component"></span>
+				<span class="modal-title" data-i18n="select_component">选择器件</span>
 				<button type="button" class="modal-close" id="picker-close">&times;</button>
 			</div>
 			<div class="modal-body">
 				<div class="form-group">
-					<input id="picker-search" data-i18n-placeholder="search_by_id_or_name" />
+					<input id="picker-search" placeholder="搜索器件（编号/名称）..." data-i18n-placeholder="search_by_id_or_name" />
 				</div>
 				<div id="picker-list" class="picker-list"></div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-danger" id="picker-clear" data-i18n="clear_mapping"></button>
+				<button type="button" class="btn btn-danger" id="picker-clear" data-i18n="clear_mapping">清除映射</button>
 				<span></span>
 			</div>
 		</div>

@@ -7,7 +7,7 @@ export function activate(): void {
 export async function openLibrary(): Promise<void> {
 	try {
 		await eda.sys_IFrame.openIFrame('/iframe/index.html', 900, 650, 'my-component-library', {
-			title: '个人器件库',
+			title: eda.sys_I18n.text('personal_component_library'),
 			maximizeButton: true,
 			minimizeButton: true,
 		});
@@ -20,7 +20,7 @@ export async function openLibrary(): Promise<void> {
 export async function openBox(): Promise<void> {
 	try {
 		await eda.sys_IFrame.openIFrame('/iframe/box.html', 600, 580, 'component-box', {
-			title: '器件盒',
+			title: eda.sys_I18n.text('component_box'),
 			maximizeButton: true,
 			minimizeButton: true,
 		});
