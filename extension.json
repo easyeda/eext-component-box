@@ -4,7 +4,7 @@
 	"displayName": "智能器件盒管理器",
 	"description": "基于立创开发板的简易器件盒。支持导入 LCSC 订单实现器件数字化管理，简化找料与盘点流程。",
 	"version": "1.6.2",
-	"publisher": "",
+	"publisher": "EasyEDA",
 	"engines": {
 		"eda": "^3.0.0"
 	},
